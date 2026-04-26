@@ -7,7 +7,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
-  const next = search.get('next') ?? '/dashboard';
+  // Push to '/' by default so the home page handles role-based routing.
+  const next = search.get('next') ?? '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,8 +32,11 @@ function LoginForm() {
       }
       router.push(next);
       router.refresh();
-    } catch {
-      setError('Network error. Is the backend running?');
+    } catch (err) {
+      console.error(err);
+      setError(
+        'Could not reach the Next.js server. Make sure the dev server is running.',
+      );
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,21 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/getCurrentUser';
+import { getBorrowerProfile } from '@/lib/getBorrowerProfile';
 
 export default async function Home() {
   const user = await getCurrentUser();
-  redirect(user ? '/dashboard' : '/login');
+  if (!user) redirect('/login');
+
+  // Borrowers must clear each step in order before reaching the dashboard.
+  if (user.role === 'Borrower') {
+    const profile = await getBorrowerProfile();
+    if (!profile || profile.status !== 'eligible') {
+      redirect('/borrower/personal-details');
+    }
+    if (!profile.salarySlip) {
+      redirect('/borrower/salary-slip');
+    }
+  }
+
+  redirect('/dashboard');
 }

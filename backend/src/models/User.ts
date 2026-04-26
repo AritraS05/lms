@@ -71,9 +71,10 @@ userSchema.methods.comparePassword = async function (
 
 // Strip sensitive fields when serialising.
 userSchema.set('toJSON', {
-  transform: (_doc, ret: Record<string, unknown>) => {
-    delete ret.password;
-    delete ret.__v;
+  transform: (_doc, ret) => {
+    const r = ret as unknown as Record<string, unknown>;
+    delete r.password;
+    delete r.__v;
     return ret;
   },
 });

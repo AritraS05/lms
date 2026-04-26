@@ -7,9 +7,16 @@ const AUTH_COOKIE = process.env.AUTH_COOKIE_NAME ?? 'lms_token';
 /**
  * Next.js 16 Proxy (formerly Middleware).
  *
- * Optimistic auth check: if no auth cookie is present and the route is not
- * public, redirect to /login. Real session validation still happens on the
- * server (getCurrentUser) before rendering protected pages.
+ * Optimistic gate: if no auth cookie is present and the route is not public,
+ * redirect to /login. Real session validation happens on the server
+ * (getCurrentUser) before rendering protected pages.
+ *
+ * Note: we intentionally do NOT redirect cookie-bearing requests away from
+ * /login or /signup. The proxy can only check cookie presence — it can't tell
+ * a stale/invalid token from a live one. If we redirected here, a stale cookie
+ * would cause /login → /dashboard → (auth fails) → /login → ... loops.
+ * /login and /signup are always safe to render; if the user is genuinely
+ * authenticated, they can navigate on from there.
  */
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
@@ -22,13 +29,6 @@ export function proxy(request: NextRequest): NextResponse {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     url.searchParams.set('next', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  if (isPublic && hasToken) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    url.search = '';
     return NextResponse.redirect(url);
   }
 

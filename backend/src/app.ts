@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env';
 import authRoutes from './routes/authRoutes';
+import borrowerRoutes from './routes/borrowerRoutes';
 import { errorHandler } from './middleware/error';
 
 export function createApp(): express.Express {
@@ -22,6 +23,7 @@ export function createApp(): express.Express {
   });
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/borrower', borrowerRoutes);
 
   app.use(errorHandler);
   return app;

@@ -33,10 +33,15 @@ export default function SignupPage() {
         if (data.errors) setFieldErrors(data.errors);
         return;
       }
-      router.push('/dashboard');
+      // Push to '/' so the home page handles role-based routing
+      // (Borrowers go to /borrower/personal-details, others to /dashboard).
+      router.push('/');
       router.refresh();
-    } catch {
-      setError('Network error. Is the backend running?');
+    } catch (err) {
+      console.error(err);
+      setError(
+        'Could not reach the Next.js server. Make sure the dev server is running.',
+      );
     } finally {
       setLoading(false);
     }
