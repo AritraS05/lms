@@ -11,10 +11,6 @@ export interface PopulatedUser {
 export type LoanWithUser = Omit<Loan, 'user'> & {
   user: PopulatedUser | string;
   rejectionReason?: string;
-  sanctionedAt?: string;
-  rejectedAt?: string;
-  disbursedAt?: string;
-  closedAt?: string;
 };
 
 export interface Payment {

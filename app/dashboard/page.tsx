@@ -203,7 +203,7 @@ function ModuleCard({
   return (
     <Link
       href={href}
-      className={`block rounded-xl border p-5 transition-shadow hover:shadow-md ${TONES[tone]}`}
+      className={`relative block rounded-xl border p-5 transition-shadow hover:shadow-md ${TONES[tone]}`}
     >
       <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
         {title}
@@ -211,9 +211,20 @@ function ModuleCard({
       <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
         {description}
       </p>
-      <span className="mt-4 inline-block text-xs font-medium text-zinc-900 dark:text-zinc-50">
-        Open module →
-      </span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="absolute bottom-4 right-4 text-zinc-400 dark:text-zinc-500"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
     </Link>
   );
 }

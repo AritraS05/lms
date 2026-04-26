@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { formatINR, formatINR2 } from '@/lib/loan';
+import { fmtDate, fmtDateTime } from '@/lib/formatDate';
 import type { Loan } from '@/lib/loan';
 import StatusBadge from './StatusBadge';
 
@@ -156,7 +157,7 @@ export default function BorrowerLoanTabs({
                       </p>
                       <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                         Applied{' '}
-                        {new Date(l.appliedAt).toLocaleDateString()}
+                        {fmtDate(l.appliedAt)}
                       </p>
                     </div>
                     <StatusBadge status={l.status} />
@@ -215,7 +216,7 @@ function ActiveLoanCard({ loan }: { loan: Loan }) {
         </div>
       </dl>
       <p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
-        Applied on {new Date(loan.appliedAt).toLocaleString()}
+        Applied on {fmtDateTime(loan.appliedAt)}
       </p>
     </div>
   );

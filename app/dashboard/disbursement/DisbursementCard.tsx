@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { formatINR, formatINR2 } from '@/lib/loan';
+import { fmtDateTime } from '@/lib/formatDate';
 import type { LoanWithUser } from '@/lib/ops';
 import { userOf } from '@/lib/ops';
 import LoanDetailModal from '../LoanDetailModal';
@@ -25,10 +26,10 @@ export default function DisbursementCard({ loan }: { loan: LoanWithUser }) {
                 · {u?.email ?? '—'}
               </span>
             </p>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400" suppressHydrationWarning>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
               Sanctioned{' '}
               {loan.sanctionedAt
-                ? new Date(loan.sanctionedAt).toLocaleString()
+                ? fmtDateTime(loan.sanctionedAt)
                 : '—'}
             </p>
           </div>

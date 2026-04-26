@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { formatINR, formatINR2 } from '@/lib/loan';
+import { fmtDate, fmtDateTime } from '@/lib/formatDate';
 
 /* ------------------------------------------------------------------ */
 /*  Types matching the backend /api/ops/loans/:id response             */
@@ -212,11 +213,7 @@ export default function LoanDetailModal({
                   label="Date of Birth"
                   value={
                     profile?.dob
-                      ? new Date(profile.dob).toLocaleDateString('en-IN', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        })
+                      ? fmtDate(profile.dob)
                       : '—'
                   }
                 />
@@ -290,12 +287,12 @@ export default function LoanDetailModal({
                 />
                 <DetailRow
                   label="Applied At"
-                  value={new Date(loan.appliedAt).toLocaleString('en-IN')}
+                  value={fmtDateTime(loan.appliedAt)}
                 />
                 {loan.sanctionedAt && (
                   <DetailRow
                     label="Sanctioned At"
-                    value={new Date(loan.sanctionedAt).toLocaleString('en-IN')}
+                    value={fmtDateTime(loan.sanctionedAt)}
                   />
                 )}
               </dl>

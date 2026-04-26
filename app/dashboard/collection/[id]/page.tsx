@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import BackButton from '@/components/BackButton';
 import { redirect, notFound } from 'next/navigation';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { serverFetchJSON } from '@/lib/serverFetch';
@@ -32,12 +32,9 @@ export default async function CollectionDetailPage({
 
   return (
     <DashboardShell user={user} current="/dashboard/collection">
-      <Link
-        href="/dashboard/collection"
-        className="text-sm text-zinc-600 hover:underline dark:text-zinc-400"
-      >
-        ← Back to disbursed loans
-      </Link>
+      <BackButton fallbackHref="/dashboard/collection">
+        Back to disbursed loans
+      </BackButton>
 
       <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
         <div className="flex flex-wrap items-start justify-between gap-4">

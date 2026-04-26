@@ -123,13 +123,15 @@ export default function RecordPaymentForm({ loanId, outstanding }: Props) {
           {error}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={busy}
-        className="sm:col-span-3 flex h-10 w-full items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-      >
-        {busy ? 'Recording…' : 'Record payment'}
-      </button>
+      <div className="sm:col-span-3 flex justify-center">
+        <button
+          type="submit"
+          disabled={busy}
+          className="flex h-10 items-center justify-center rounded-md bg-zinc-900 px-6 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        >
+          {busy ? 'Recording…' : 'Record payment'}
+        </button>
+      </div>
     </form>
   );
 }

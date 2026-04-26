@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { formatINR, formatINR2 } from '@/lib/loan';
+import { fmtDateTime } from '@/lib/formatDate';
 import type { LoanWithUser } from '@/lib/ops';
 import { userOf } from '@/lib/ops';
 import LoanDetailModal from '../LoanDetailModal';
@@ -25,8 +26,8 @@ export default function SanctionCard({ loan }: { loan: LoanWithUser }) {
                 · {u?.email ?? '—'}
               </span>
             </p>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400" suppressHydrationWarning>
-              Applied {new Date(loan.appliedAt).toLocaleString()}
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+              Applied {fmtDateTime(loan.appliedAt)}
             </p>
           </div>
           <dl className="grid grid-cols-3 gap-4 text-right text-sm">

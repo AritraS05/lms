@@ -34,8 +34,13 @@ export interface Loan {
   interestRatePct: number;
   interestAmount: number;
   totalRepayment: number;
+  amountPaid: number;
   status: LoanStatus;
   appliedAt: string;
+  sanctionedAt?: string;
+  rejectedAt?: string;
+  disbursedAt?: string;
+  closedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
