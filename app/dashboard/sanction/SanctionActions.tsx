@@ -33,7 +33,7 @@ export default function SanctionActions({ loanId }: { loanId: string }) {
   }
 
   return (
-    <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+    <div>
       {!showReject ? (
         <div className="flex flex-wrap gap-2">
           <button

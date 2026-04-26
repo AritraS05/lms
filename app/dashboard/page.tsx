@@ -4,10 +4,10 @@ import { getCurrentUser } from '@/lib/getCurrentUser';
 import { getBorrowerProfile } from '@/lib/getBorrowerProfile';
 import { getMyLoans } from '@/lib/getMyLoans';
 import { ROLE_TO_MODULE } from '@/lib/ops';
-import { ACTIVE_LOAN_STATUSES, formatINR, formatINR2 } from '@/lib/loan';
+import { ACTIVE_LOAN_STATUSES } from '@/lib/loan';
 import type { Loan } from '@/lib/loan';
 import DashboardShell from './DashboardShell';
-import StatusBadge from './StatusBadge';
+import BorrowerLoanTabs from './BorrowerLoanTabs';
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
@@ -70,10 +70,15 @@ export default async function DashboardPage() {
   if (!borrowerProfile.salarySlip) {
     redirect('/borrower/salary-slip');
   }
+
   const loans: Loan[] = await getMyLoans();
+
+  // First-time borrower with no loans: send to the application flow.
   if (loans.length === 0) redirect('/borrower/apply-loan');
+
   const activeLoan =
     loans.find((l) => ACTIVE_LOAN_STATUSES.includes(l.status)) ?? null;
+  const historyLoans = loans.filter((l) => l._id !== activeLoan?._id);
 
   return (
     <DashboardShell user={user}>
@@ -166,80 +171,12 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {activeLoan && <BorrowerLoanCard loan={activeLoan} />}
-
-      {loans.length > 1 && (
-        <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-            Loan history
-          </h3>
-          <ul className="mt-4 divide-y divide-zinc-200 text-sm dark:divide-zinc-800">
-            {loans
-              .filter((l) => l._id !== activeLoan?._id)
-              .map((l) => (
-                <li
-                  key={l._id}
-                  className="flex items-center justify-between py-3"
-                >
-                  <div>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                      {formatINR(l.principal)} · {l.tenureDays} days
-                    </p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                      Applied {new Date(l.appliedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <StatusBadge status={l.status} />
-                </li>
-              ))}
-          </ul>
-        </div>
-      )}
+      <BorrowerLoanTabs
+        activeLoan={activeLoan}
+        historyLoans={historyLoans}
+        hasActiveLoan={!!activeLoan}
+      />
     </DashboardShell>
-  );
-}
-
-function BorrowerLoanCard({ loan }: { loan: Loan }) {
-  return (
-    <div className="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm dark:border-indigo-900/60 dark:bg-indigo-950/40">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-          Active loan application
-        </h3>
-        <StatusBadge status={loan.status} />
-      </div>
-      <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
-        <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Principal</dt>
-          <dd className="mt-1 font-medium text-zinc-900 dark:text-zinc-50">
-            {formatINR(loan.principal)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Tenure</dt>
-          <dd className="mt-1 font-medium text-zinc-900 dark:text-zinc-50">
-            {loan.tenureDays} days
-          </dd>
-        </div>
-        <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">
-            Interest @ {loan.interestRatePct}%
-          </dt>
-          <dd className="mt-1 font-medium text-zinc-900 dark:text-zinc-50">
-            {formatINR2(loan.interestAmount)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-zinc-500 dark:text-zinc-400">Total repayment</dt>
-          <dd className="mt-1 font-semibold text-zinc-900 dark:text-zinc-50">
-            {formatINR2(loan.totalRepayment)}
-          </dd>
-        </div>
-      </dl>
-      <p className="mt-4 text-xs text-zinc-500 dark:text-zinc-400">
-        Applied on {new Date(loan.appliedAt).toLocaleString()}
-      </p>
-    </div>
   );
 }
 

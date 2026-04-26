@@ -9,6 +9,7 @@ import salesRoutes from './routes/salesRoutes';
 import sanctionRoutes from './routes/sanctionRoutes';
 import disbursementRoutes from './routes/disbursementRoutes';
 import collectionRoutes from './routes/collectionRoutes';
+import opsRoutes from './routes/opsRoutes';
 import { errorHandler } from './middleware/error';
 
 export function createApp(): express.Express {
@@ -34,6 +35,7 @@ export function createApp(): express.Express {
   app.use('/api/sanction', sanctionRoutes);
   app.use('/api/disbursement', disbursementRoutes);
   app.use('/api/collection', collectionRoutes);
+  app.use('/api/ops', opsRoutes);
 
   app.use(errorHandler);
   return app;
