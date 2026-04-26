@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { getBorrowerProfile } from '@/lib/getBorrowerProfile';
+import { getActiveLoan } from '@/lib/getMyLoans';
 
 export default async function Home() {
   const user = await getCurrentUser();
@@ -14,6 +15,10 @@ export default async function Home() {
     }
     if (!profile.salarySlip) {
       redirect('/borrower/salary-slip');
+    }
+    const activeLoan = await getActiveLoan();
+    if (!activeLoan) {
+      redirect('/borrower/apply-loan');
     }
   }
 
