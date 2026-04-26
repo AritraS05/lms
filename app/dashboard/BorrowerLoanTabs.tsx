@@ -6,6 +6,7 @@ import { formatINR, formatINR2 } from '@/lib/loan';
 import { fmtDate, fmtDateTime } from '@/lib/formatDate';
 import type { Loan } from '@/lib/loan';
 import StatusBadge from './StatusBadge';
+import BorrowerLoanDetailModal from './BorrowerLoanDetailModal';
 
 type Tab = 'active' | 'history';
 
@@ -19,6 +20,7 @@ export default function BorrowerLoanTabs({
   hasActiveLoan: boolean;
 }) {
   const [tab, setTab] = useState<Tab>('active');
+  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null);
 
   return (
     <div className="mt-6">
@@ -106,7 +108,9 @@ export default function BorrowerLoanTabs({
       {tab === 'active' && (
         <div className="mt-4">
           {activeLoan ? (
-            <ActiveLoanCard loan={activeLoan} />
+            <div onClick={() => setSelectedLoanId(activeLoan._id)} className="cursor-pointer">
+              <ActiveLoanCard loan={activeLoan} />
+            </div>
           ) : (
             <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-950">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900">
@@ -149,7 +153,8 @@ export default function BorrowerLoanTabs({
                 {historyLoans.map((l) => (
                   <li
                     key={l._id}
-                    className="flex items-center justify-between px-6 py-4"
+                    className="flex cursor-pointer items-center justify-between px-6 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+                    onClick={() => setSelectedLoanId(l._id)}
                   >
                     <div>
                       <p className="font-medium text-zinc-900 dark:text-zinc-50">
@@ -174,13 +179,20 @@ export default function BorrowerLoanTabs({
           )}
         </div>
       )}
+
+      {/* Loan Detail Modal */}
+      <BorrowerLoanDetailModal
+        loanId={selectedLoanId}
+        open={!!selectedLoanId}
+        onClose={() => setSelectedLoanId(null)}
+      />
     </div>
   );
 }
 
 function ActiveLoanCard({ loan }: { loan: Loan }) {
   return (
-    <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm dark:border-indigo-900/60 dark:bg-indigo-950/40">
+    <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-6 shadow-sm transition-shadow hover:shadow-md dark:border-indigo-900/60 dark:bg-indigo-950/40">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
           Active loan application

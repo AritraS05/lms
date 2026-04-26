@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import { z } from 'zod';
 import { Loan } from '../models/Loan';
+import { Payment } from '../models/Payment';
 import { BorrowerProfile } from '../models/BorrowerProfile';
 import {
   ACTIVE_LOAN_STATUSES,
@@ -92,6 +94,35 @@ export async function getMyLoans(
       appliedAt: -1,
     });
     res.json({ loans });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getMyLoanDetail(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    if (!req.user) throw new HttpError(401, 'Not authenticated');
+    
+    const { id } = req.params;
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new HttpError(400, 'Invalid loan id');
+    }
+
+    const loan = await Loan.findOne({ _id: id, user: req.user.sub });
+    if (!loan) throw new HttpError(404, 'Loan not found');
+
+    const payments = await Payment.find({ loan: loan._id })
+      .sort({ paidOn: -1 })
+      // Select fields safe to show the borrower
+      .select('utr amount paidOn createdAt');
+
+    const outstanding = round2(loan.totalRepayment - loan.amountPaid);
+    
+    res.json({ loan, payments, outstanding });
   } catch (err) {
     next(err);
   }
