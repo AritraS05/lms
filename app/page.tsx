@@ -16,10 +16,6 @@ export default async function Home() {
     if (!profile.salarySlip) {
       redirect('/borrower/salary-slip');
     }
-    const activeLoan = await getActiveLoan();
-    if (!activeLoan) {
-      redirect('/borrower/apply-loan');
-    }
   }
 
   redirect('/dashboard');

@@ -51,17 +51,6 @@ export async function applyForLoan(
       throw new HttpError(409, 'Upload your salary slip before applying');
     }
 
-    const active = await Loan.findOne({
-      user: req.user.sub,
-      status: { $in: ACTIVE_LOAN_STATUSES },
-    });
-    if (active) {
-      throw new HttpError(
-        409,
-        'You already have an active loan application. Wait for it to be processed before applying again.',
-      );
-    }
-
     const data = applySchema.parse(req.body);
     const interest = round2(simpleInterest(data.principal, data.tenureDays));
     const total = round2(data.principal + interest);

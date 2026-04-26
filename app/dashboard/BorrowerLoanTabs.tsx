@@ -11,13 +11,11 @@ import BorrowerLoanDetailModal from './BorrowerLoanDetailModal';
 type Tab = 'active' | 'history';
 
 export default function BorrowerLoanTabs({
-  activeLoan,
+  activeLoans,
   historyLoans,
-  hasActiveLoan,
 }: {
-  activeLoan: Loan | null;
+  activeLoans: Loan[];
   historyLoans: Loan[];
-  hasActiveLoan: boolean;
 }) {
   const [tab, setTab] = useState<Tab>('active');
   const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null);
@@ -54,62 +52,38 @@ export default function BorrowerLoanTabs({
           </button>
         </div>
 
-        {hasActiveLoan ? (
-          <div className="group relative">
-            <button
-              disabled
-              className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Apply for Loan
-            </button>
-            <span className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white shadow-lg group-hover:block dark:bg-zinc-100 dark:text-zinc-900">
-              You already have an active loan application
-            </span>
-          </div>
-        ) : (
-          <Link
-            href="/borrower/apply-loan"
-            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+        <Link
+          href="/borrower/apply-loan"
+          className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-zinc-900 shadow-sm transition-colors hover:bg-zinc-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Apply for Loan
-          </Link>
-        )}
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Apply for Loan
+        </Link>
       </div>
 
       {/* Active Loan tab content */}
       {tab === 'active' && (
         <div className="mt-4">
-          {activeLoan ? (
-            <div onClick={() => setSelectedLoanId(activeLoan._id)} className="cursor-pointer">
-              <ActiveLoanCard loan={activeLoan} />
+          {activeLoans.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {activeLoans.map((loan) => (
+                <div key={loan._id} onClick={() => setSelectedLoanId(loan._id)} className="cursor-pointer">
+                  <ActiveLoanCard loan={loan} />
+                </div>
+              ))}
             </div>
           ) : (
             <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-10 text-center dark:border-zinc-700 dark:bg-zinc-950">
@@ -133,10 +107,10 @@ export default function BorrowerLoanTabs({
                 </svg>
               </div>
               <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                No active loan
+                No active loans
               </p>
               <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                You don&apos;t have an active loan application. Click &quot;Apply
+                You don&apos;t have any active loan applications. Click &quot;Apply
                 for Loan&quot; to get started.
               </p>
             </div>

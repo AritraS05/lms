@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/getCurrentUser';
 import { getBorrowerProfile } from '@/lib/getBorrowerProfile';
-import { getActiveLoan, getMyLoans } from '@/lib/getMyLoans';
+import { getMyLoans } from '@/lib/getMyLoans';
 import Link from 'next/link';
 import LoanApplyForm from './LoanApplyForm';
 
@@ -15,9 +15,6 @@ export default async function ApplyLoanPage() {
     redirect('/borrower/personal-details');
   }
   if (!profile.salarySlip) redirect('/borrower/salary-slip');
-
-  const activeLoan = await getActiveLoan();
-  if (activeLoan) redirect('/dashboard');
 
   const loans = await getMyLoans();
   const isFirstTime = loans.length === 0;

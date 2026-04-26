@@ -76,9 +76,9 @@ export default async function DashboardPage() {
   // First-time borrower with no loans: send to the application flow.
   if (loans.length === 0) redirect('/borrower/apply-loan');
 
-  const activeLoan =
-    loans.find((l) => ACTIVE_LOAN_STATUSES.includes(l.status)) ?? null;
-  const historyLoans = loans.filter((l) => l._id !== activeLoan?._id);
+  const activeLoans = loans.filter((l) => ACTIVE_LOAN_STATUSES.includes(l.status));
+  const activeLoanIds = new Set(activeLoans.map(l => l._id));
+  const historyLoans = loans.filter((l) => !activeLoanIds.has(l._id));
 
   return (
     <DashboardShell user={user}>
@@ -172,9 +172,8 @@ export default async function DashboardPage() {
       </div>
 
       <BorrowerLoanTabs
-        activeLoan={activeLoan}
+        activeLoans={activeLoans}
         historyLoans={historyLoans}
-        hasActiveLoan={!!activeLoan}
       />
     </DashboardShell>
   );
